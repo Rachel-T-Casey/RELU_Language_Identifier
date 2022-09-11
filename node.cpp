@@ -16,6 +16,9 @@ void Node::deleteConnection(Node* ptr) {
         }   
     }
 }
+void Node::deleteConnections() {
+    this->m_connections.clear();
+}
 void Node::suggestValue(double weightedValue) {
     this->m_value += weightedValue;
 }
@@ -39,6 +42,6 @@ double Node::getVal() const {
     return this->relu(this->m_value);
 }
 
- std::vector<std::pair<Node*, double>> Node::getConnetions() const {
+ std::vector<std::pair<Node*, double>> Node::getConnections() const {
     return this->m_connections;
  }

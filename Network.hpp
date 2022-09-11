@@ -22,7 +22,9 @@
             std::vector<Node*> m_inputNodes;
             std::vector<std::vector<Node*>> m_hiddenNodes;
             std::vector<Node*> m_outputNodes;
+
             std::vector<double> m_expected;
+            std::vector<double> m_actual; 
             const double DCS = 0.5;
     };
 
