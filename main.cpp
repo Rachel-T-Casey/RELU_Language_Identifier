@@ -1,8 +1,7 @@
 #include <iostream>
-#include "node.hpp"
+#include "Network.hpp"
 int main(int argc, char const *argv[])
 {
-    Node n;
-
+    Network N(4, 2);
     return 0;
 }

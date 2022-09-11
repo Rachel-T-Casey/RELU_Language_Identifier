@@ -8,7 +8,7 @@ CPPFLAGS = -Wall -g -std=c++17 $(shell root-config --cflags)
 LDFLAGS = -g $(shell root-config --ldflags)
 LDLIBS = $(shell root-config --libs)
 
-SourceFiles = main.cpp node.cpp
+SourceFiles = main.cpp node.cpp network.cpp
 Objects = $(subst .cpp,.o,$(SourceFiles))
 
 all: Output
