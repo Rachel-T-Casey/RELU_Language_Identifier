@@ -7,6 +7,15 @@ void Node::addConnection(Node* ptr, double weight) {
     std::pair<Node*, double> p(ptr, weight);
     this->m_connections.push_back(p);
 }
+
+void Node::deleteConnection(Node* ptr) {
+    for (auto it = this->m_connections.begin(); it != this->m_connections.end(); ++it) {
+        std::pair<Node*, double> p = *it;
+        if(p.first == ptr) {
+            this->m_connections.erase(it);
+        }   
+    }
+}
 void Node::suggestValue(double weightedValue) {
     this->m_value += weightedValue;
 }

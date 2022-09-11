@@ -8,6 +8,7 @@ class Node {
         Node();
         void pushValue();
         void addConnection(Node* ptr, double weight);
+        void deleteConnection(Node* ptr);
         void suggestValue(double weightedValue);
         void setValue(double newValue);
         double getVal() const;
@@ -18,3 +19,5 @@ class Node {
         std::vector<std::pair<Node*, double>> m_connections;
     };
 #endif
+
+
