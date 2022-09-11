@@ -1,5 +1,5 @@
 #include "node.hpp"
-
+#include <stdexcept>
 
 Node::Node() { this->m_value = 0; }
 
@@ -10,8 +10,7 @@ void Node::addConnection(Node* ptr, double weight) {
 
 void Node::deleteConnection(Node* ptr) {
     for (auto it = this->m_connections.begin(); it != this->m_connections.end(); ++it) {
-        std::pair<Node*, double> p = *it;
-        if(p.first == ptr) {
+        if((*it).first == ptr) {
             this->m_connections.erase(it);
         }   
     }
@@ -44,4 +43,19 @@ double Node::getVal() const {
 
  std::vector<std::pair<Node*, double>> Node::getConnections() const {
     return this->m_connections;
- }
+}
+double Node::connectionWeight(Node* ptr) const {
+   for (auto it = this->m_connections.begin(); it != this->m_connections.end(); ++it) {
+        if((*it).first == ptr) {
+            return (*it).second;
+        }   
+    }
+    throw std::invalid_argument("No connections to passed node");
+}
+void Node::setConnectionWeight(Node* ptr, double weight) {
+     for (auto it = this->m_connections.begin(); it != this->m_connections.end(); ++it) {
+        if((*it).first == ptr) {
+            (*it).second = weight;
+        }   
+    }
+}

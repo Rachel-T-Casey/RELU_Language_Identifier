@@ -8,6 +8,8 @@ Network::Network(int inputs, int outputs) {
     for(int i = 0; i < outputs; i++) {
         this->m_outputNodes.push_back(new Node);
     }
+    this->m_bias = new Node;
+    this->m_bias->setValue(0);
 }
 Network::~Network() {
     for(auto& i : this->m_inputNodes) {
@@ -28,6 +30,7 @@ void Network::addLayer(int nodes) {
             for(auto& outputNode : this->m_outputNodes) {
                 ptr->addConnection(outputNode, DCS);
             }
+            this->m_bias->addConnection(ptr, DCS);
             layer.push_back(ptr);
         }
         m_hiddenNodes.push_back(layer);
@@ -72,12 +75,36 @@ void Network::processData() {
     for(auto& inputNode : this->m_inputNodes) {
         inputNode->pushValue();
     }
+    
+    this->m_bias->pushValue();
+
     for(unsigned int i = 0; i < this->m_hiddenNodes.size(); i++) {
         for(auto& hiddenNode : this->m_hiddenNodes[i]) {
             hiddenNode->pushValue();
         }
     }
     for(auto& outputNode : this->m_outputNodes) {
+        if(outputNode->getVal() > 1) {
+            m_actual.push_back(1);
+            return;
+        }
+        if(outputNode->getVal() < 0) {
+            m_actual.push_back(0);
+            return;
+        }
         m_actual.push_back(outputNode->getVal());
     }
+}
+
+void Network::printActual() {
+    for(auto& output : m_actual) {
+        std::cout << output << std::endl;
+    }
+}
+
+Node* Network::bias() const { 
+    return this->m_bias;
+ }
+void Network::setBias(double bias) {
+    this->m_bias->setValue(bias);
 }

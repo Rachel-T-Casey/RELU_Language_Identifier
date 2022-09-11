@@ -17,12 +17,15 @@
             void expected(std::vector<double> expectedOutputs);
 
             void processData();
-
+            void printActual();
+            Node* bias() const;
+            void setBias(double bias);
         private:
             std::vector<Node*> m_inputNodes;
             std::vector<std::vector<Node*>> m_hiddenNodes;
             std::vector<Node*> m_outputNodes;
-
+            Node* m_bias;
+            
             std::vector<double> m_expected;
             std::vector<double> m_actual; 
             const double DCS = 0.5;

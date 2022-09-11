@@ -7,6 +7,7 @@ int main(int argc, char const *argv[])
     N.inputs({1,0});
     N.expected({1});
     N.processData();
+    N.printActual();
     return 0;
 }
 
