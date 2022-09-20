@@ -5,30 +5,28 @@
     class Network {
         
         public:
-            Network(int inputs, int outputs);
+            Network(unsigned int inputs, unsigned int outputs);
             ~Network();
             // Sets the inital input values
 
-            void addLayer(int nodes);
+            void addLayer();
             void deleteLayer();
 
-            // Number of inputed values must equal number of inputers
-            void inputs(std::vector<double> inputValues);
-            void expected(std::vector<double> expectedOutputs);
-
-            void processData();
-            void printActual();
-            Node* bias() const;
+            void connectLayers(unsigned int one, unsigned int two);
+            unsigned int layers() const; 
+            void addNodesToLayer(unsigned int layer, unsigned int nodes) ; 
+            Node* node(unsigned int layer, unsigned int nodeNum) const;
+            void connectNodes(Node* one, Node* two, double strength);
             void setBias(double bias);
         private:
-            std::vector<Node*> m_inputNodes;
-            std::vector<std::vector<Node*>> m_hiddenNodes;
-            std::vector<Node*> m_outputNodes;
             Node* m_bias;
-            
-            std::vector<double> m_expected;
-            std::vector<double> m_actual; 
+            std::vector<std::vector<Node*>> m_nodes;
+            std::vector<Node*> m_inputs;
+            std::vector<Node*> m_outputs;
             const double DCS = 0.5;
     };
 
 #endif 
+
+
+

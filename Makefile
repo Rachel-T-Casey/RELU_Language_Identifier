@@ -4,7 +4,7 @@ CXX = g++
 RM = rm -f
 OutputName = Output
 # Root-config requires root framework
-CPPFLAGS = -Wall -g -std=c++17 $(shell root-config --cflags)
+CPPFLAGS = -Wall -g -std=c++20
 LDFLAGS = -g $(shell root-config --ldflags)
 LDLIBS = $(shell root-config --libs)
 

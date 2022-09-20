@@ -1,110 +1,59 @@
 #include "Network.hpp"
 #include <stdexcept>
 #include <iostream>
-Network::Network(int inputs, int outputs) {
-    for(int i = 0; i < inputs; i++) {
-        this->m_inputNodes.push_back(new Node);
-    }
-    for(int i = 0; i < outputs; i++) {
-        this->m_outputNodes.push_back(new Node);
+Network::Network(unsigned int inputs, unsigned int outputs) {
+    std::vector<Node*> inputLayer;
+    for(unsigned int i = 0; i < inputs; i++) {
+        Node* ptr = new Node;
+        inputLayer.push_back(ptr);
+        this->m_inputs.push_back(ptr);
     }
     this->m_bias = new Node;
     this->m_bias->setValue(0);
+    inputLayer.push_back(m_bias);
+    this->m_nodes.push_back(inputLayer);
+    for(unsigned int i = 0; i < inputs; i++) {
+        Node* ptr = new Node;
+        this->m_outputs.push_back(ptr);
+    }
 }
 Network::~Network() {
-    for(auto& i : this->m_inputNodes) {
-        delete i;
+    for(unsigned int layer = 0; layer < this->m_nodes.size(); layer++) { 
+        for(auto& node : this->m_nodes[layer]) {
+            delete node;
+        }
     }
-    for(auto& i : this->m_outputNodes) {
-        delete i;
+    for(auto& outputNode : this->m_outputs) {
+        delete outputNode;
     }
 }
-void Network::addLayer(int nodes) {
+
+void Network::addLayer() {
     std::vector<Node*> layer;
-    if(this->m_hiddenNodes.size() == 0) { 
-        for(int i = 0; i < nodes; i++) {
-            Node* ptr = new Node;
-            for(auto& inputNode : this->m_inputNodes) {
-                inputNode->addConnection(ptr, DCS);
-            }
-            for(auto& outputNode : this->m_outputNodes) {
-                ptr->addConnection(outputNode, DCS);
-            }
-            this->m_bias->addConnection(ptr, DCS);
-            layer.push_back(ptr);
-        }
-        m_hiddenNodes.push_back(layer);
-    } else {
-        for(int i = 0; i < nodes; i++) {
-            Node* ptr = new Node;
-            for(auto& hiddenNode : this->m_hiddenNodes[m_hiddenNodes.size()-1]) {
-                hiddenNode->deleteConnections();
-                hiddenNode->addConnection(ptr, DCS);
-            }
-            for(auto& outputNode : this->m_outputNodes) {
-                ptr->addConnection(outputNode, DCS);
-            }
-            layer.push_back(ptr);
-        }
-    }
-    this->m_hiddenNodes.push_back(layer);
-
-}
-void Network::deleteLayer() {
-
+    this->m_nodes.push_back(layer);
 }
 
-void Network::inputs(std::vector<double> inputValues) {
-    if(inputValues.size() != inputValues.size()) {
-        throw std::invalid_argument("Number of input values must equal number of input nodes");
-    }
-    for(unsigned int i = 0; i < inputValues.size(); i++) {
-        this->m_inputNodes[i]->setValue(inputValues[i]);
-    }
-}            
-void Network::expected(std::vector<double> expectedOutputs) {
-    if(expectedOutputs.size() != this->m_outputNodes.size()) {
-        throw std::invalid_argument("Number of expected outputs must equal number of output nodes");
-    }
-    for(auto& expectedValue : expectedOutputs) {
-        this->m_expected.push_back(expectedValue);
+void Network::addNodesToLayer(unsigned int layer, unsigned int nodes) {
+    for(unsigned int i = 0; i < nodes; i++) {
+        Node* ptr = new Node;
+        if(this->m_nodes.size() == layer) {
+            this->m_outputs.push_back(ptr);
+        } else {
+            this->m_nodes[layer].push_back(ptr);
+        }
     }
 }
 
-void Network::processData() {
-    for(auto& inputNode : this->m_inputNodes) {
-        inputNode->pushValue();
+Node* Network::node(unsigned int layer, unsigned int nodeNum) const {
+    if(nodeNum == this->m_nodes.size()) {
+        return this->m_outputs[nodeNum];
     }
-    
-    this->m_bias->pushValue();
-
-    for(unsigned int i = 0; i < this->m_hiddenNodes.size(); i++) {
-        for(auto& hiddenNode : this->m_hiddenNodes[i]) {
-            hiddenNode->pushValue();
-        }
-    }
-    for(auto& outputNode : this->m_outputNodes) {
-        if(outputNode->getVal() > 1) {
-            m_actual.push_back(1);
-            return;
-        }
-        if(outputNode->getVal() < 0) {
-            m_actual.push_back(0);
-            return;
-        }
-        m_actual.push_back(outputNode->getVal());
-    }
+    return this->m_nodes[layer][nodeNum];
 }
 
-void Network::printActual() {
-    for(auto& output : m_actual) {
-        std::cout << output << std::endl;
-    }
+void Network::connectNodes(Node* one, Node* two, double strength) {
+    one->addConnection(two, strength);
 }
-
-Node* Network::bias() const { 
-    return this->m_bias;
- }
-void Network::setBias(double bias) {
-    this->m_bias->setValue(bias);
+unsigned int Network::layers() const {
+    return this->m_nodes.size() + 1;
 }
