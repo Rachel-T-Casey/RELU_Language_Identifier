@@ -8,24 +8,9 @@
 #include "Network.hpp"
 
 const std::vector<int> BAD_CHARS = {0, 1, 2, 13, 25};
+const int MAX_WORD_LENGTH = 16;
+const int NUMBER_OF_DICTIONARIES = 4;
 
-bool isCharFound(int c,std::vector<int> uci)
-{
-    for(auto& i : uci) {
-        if(c == i) {
-            return true;
-        }
-    }
-    return false;
-}
-bool isSpecialFound(int c, int next, std::vector<std::pair<int, int>> specialChars) {
-    for(auto& p : specialChars) {
-        if(p.first == c && p.second == next)
-            return true;
-    }
-    std::cout << "Not found " << c << ":" << next << std::endl;
-    return false;
-}
 
 void loadUniqueChars(std::wifstream& s, std::set<char8_t>& uniqueChars) {
     std::wstring line;
@@ -39,6 +24,28 @@ void loadUniqueChars(std::wifstream& s, std::set<char8_t>& uniqueChars) {
 int getPosition(char8_t c, std::set<char8_t>& uniqueChars) {
     auto it = std::find(uniqueChars.begin(), uniqueChars.end(), c);
     return std::distance(uniqueChars.begin(), it);
+}
+
+std::vector<int> buildInputs(std::vector<int>& characterPositions, int uniqueCharCount) {
+    std::vector<int> r;
+    while(characterPositions.size() > MAX_WORD_LENGTH) {
+        characterPositions.pop_back();
+    }
+    int emptyLetters = MAX_WORD_LENGTH - characterPositions.size();
+    int emptyInputs = emptyLetters * uniqueCharCount;
+    for(int charPos : characterPositions) {
+        for(int i = 0; i < uniqueCharCount; i++) {
+            if(i == charPos){
+                r.push_back(1);
+            } else {
+                r.push_back(-1);
+            }
+        }
+    }
+    for(int i = 0; i < emptyInputs; i++) {
+        r.push_back(0);
+    }
+    return r;
 }
 int main(int argc, char const *argv[])
 {
@@ -77,4 +84,9 @@ int main(int argc, char const *argv[])
     loadUniqueChars(Spanish, uniqueChars);
     Spanish.close();
     
+    int number_of_inputs = uniqueChars.size() * MAX_WORD_LENGTH;
+    std::vector<int> testInput = {4, 1, 4};
+    std::vector<int> test = buildInputs(testInput, uniqueChars.size());
+ 
+    Network(number_of_inputs, NUMBER_OF_DICTIONARIES);
 }
