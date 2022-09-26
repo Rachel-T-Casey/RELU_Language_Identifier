@@ -2,58 +2,52 @@
 #include <stdexcept>
 #include <iostream>
 Network::Network(unsigned int inputs, unsigned int outputs) {
-    std::vector<Node*> inputLayer;
+    
+    std::vector<Node*>* inputLayer = &m_nodes.inputs();
+    this->m_nodes.addLayer();
+    std::vector<Node*>* outputLayer = &m_nodes.outputs();
     for(unsigned int i = 0; i < inputs; i++) {
-        Node* ptr = new Node;
-        inputLayer.push_back(ptr);
-        this->m_inputs.push_back(ptr);
+        Node* n = new Node;
+        inputLayer->push_back(n);
+        this->m_nodes[0].push_back(n);
     }
-    this->m_bias = new Node;
-    this->m_bias->setValue(0);
-    inputLayer.push_back(m_bias);
-    this->m_nodes.push_back(inputLayer);
-    for(unsigned int i = 0; i < inputs; i++) {
-        Node* ptr = new Node;
-        this->m_outputs.push_back(ptr);
+        // Code for bias node management 
+
+    for(unsigned int i = 0; i < outputs; i++) {
+        Node * n = new Node;
+        outputLayer->push_back(n);
     }
 }
 Network::~Network() {
-    for(unsigned int layer = 0; layer < this->m_nodes.size(); layer++) { 
-        for(auto& node : this->m_nodes[layer]) {
+    for(unsigned int i = 0; i < this->m_nodes.size(); i++) {
+        for(auto& node : this->m_nodes[i]) {
             delete node;
         }
     }
-    for(auto& outputNode : this->m_outputs) {
-        delete outputNode;
-    }
 }
-
 void Network::addLayer() {
-    std::vector<Node*> layer;
-    this->m_nodes.push_back(layer);
+    this->m_nodes.addLayer();
+    return;
 }
-
-void Network::addNodesToLayer(unsigned int layer, unsigned int nodes) {
-    for(unsigned int i = 0; i < nodes; i++) {
-        Node* ptr = new Node;
-        if(this->m_nodes.size() == layer) {
-            this->m_outputs.push_back(ptr);
-        } else {
-            this->m_nodes[layer].push_back(ptr);
-        }
+void Network::addNodes(unsigned int index, unsigned int count) {
+    for(unsigned int i = 0; i < count; i ++) {
+        this->m_nodes[index].push_back(new Node);
     }
 }
 
-Node* Network::node(unsigned int layer, unsigned int nodeNum) const {
-    if(nodeNum == this->m_nodes.size()) {
-        return this->m_outputs[nodeNum];
+std::vector<double> Network::layer(unsigned int index) {
+    std::vector<double> r;
+    for(auto& node : this->m_nodes[index]) {
+        r.push_back(node->getVal());
     }
-    return this->m_nodes[layer][nodeNum];
+    return r;
 }
 
-void Network::connectNodes(Node* one, Node* two, double strength) {
-    one->addConnection(two, strength);
-}
-unsigned int Network::layers() const {
-    return this->m_nodes.size() + 1;
+void Network::process(std::vector<double> data) {
+    if(data.size() != this->m_nodes.inputs().size())
+        throw;
+    
+   for(unsigned int i = 0; i < data.size(); i++) {
+        this->m_nodes.inputs()[i]->setValue(data[i]);
+    }
 }

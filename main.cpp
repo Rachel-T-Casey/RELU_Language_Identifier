@@ -36,9 +36,9 @@ std::vector<int> buildInputs(std::vector<int>& characterPositions, int uniqueCha
     for(int charPos : characterPositions) {
         for(int i = 0; i < uniqueCharCount; i++) {
             if(i == charPos){
-                r.push_back(1);
+                r.push_back(2);
             } else {
-                r.push_back(-1);
+                r.push_back(1);
             }
         }
     }
@@ -85,8 +85,13 @@ int main(int argc, char const *argv[])
     Spanish.close();
     
     int number_of_inputs = uniqueChars.size() * MAX_WORD_LENGTH;
-    std::vector<int> testInput = {4, 1, 4};
+    std::vector<int> testInput = {3, 0, 3};
     std::vector<int> test = buildInputs(testInput, uniqueChars.size());
- 
-    Network(number_of_inputs, NUMBER_OF_DICTIONARIES);
+    std::cout << number_of_inputs << std::endl;
+
+    Network N(number_of_inputs, NUMBER_OF_DICTIONARIES);
+    N.addLayer();
+    N.addNodes(1, 10);
+
+
 }
