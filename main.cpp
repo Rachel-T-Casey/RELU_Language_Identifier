@@ -87,11 +87,11 @@ int main(int argc, char const *argv[])
     int number_of_inputs = uniqueChars.size() * MAX_WORD_LENGTH;
     std::vector<int> testInput = {3, 0, 3};
     std::vector<int> test = buildInputs(testInput, uniqueChars.size());
-    std::cout << number_of_inputs << std::endl;
 
     Network N(number_of_inputs, NUMBER_OF_DICTIONARIES);
     N.addLayer();
     N.addNodes(1, 10);
-
-
+    N.connectLayer(0, 1);
+    N.connectLayer(1, 2);
+    
 }

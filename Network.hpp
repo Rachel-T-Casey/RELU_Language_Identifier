@@ -9,8 +9,10 @@
             ~Network();
             void addLayer();
             void addNodes(unsigned int index, unsigned int nodeCount);
-            void process(std::vector<double> inputs);
+            void process(std::vector<int> inputs);
             std::vector<double> layer(unsigned int index);
+            void connectLayer(unsigned int input, unsigned int output);
+
             // Sets the inital input values
 
         private:
@@ -18,7 +20,7 @@
                 public: 
                     std::vector<Node*>& inputs()  { return this->m_inputs; }
                     std::vector<Node*>& outputs()  { return this->m_outputs; }
-                    unsigned int size() const { return m_nodes.size();}
+                    unsigned int size() const { return m_nodes.size() + 1;}
                     void addLayer() {
                         std::vector<Node*> layer;
                         this->m_nodes.push_back(layer);
@@ -50,6 +52,7 @@
                     std::vector<Node*> m_outputs;
             };
 
+            void connectNode(Node* input, Node* output, double strength);
             nodeVectors m_nodes;
             const double DCS = 0.5;
     };

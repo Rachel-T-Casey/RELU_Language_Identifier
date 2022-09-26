@@ -43,11 +43,26 @@ std::vector<double> Network::layer(unsigned int index) {
     return r;
 }
 
-void Network::process(std::vector<double> data) {
+void Network::connectNode(Node* input, Node* output, double strength) {
+    input->addConnection(output, strength);
+}
+
+void Network::connectLayer(unsigned int send, unsigned int receive) {
+    for(auto& sender : this->m_nodes[send]) {
+        for(auto& receiver : this->m_nodes[receive]) {
+            this->connectNode(sender, receiver, DCS);
+        }
+    }
+}
+void Network::process(std::vector<int> data) {
     if(data.size() != this->m_nodes.inputs().size())
         throw;
-    
-   for(unsigned int i = 0; i < data.size(); i++) {
+    for(unsigned int i = 0; i < data.size(); i++) {
         this->m_nodes.inputs()[i]->setValue(data[i]);
+    }
+    for(unsigned int i = 0; i < this->m_nodes.size()-1; i++) {
+        for(auto& node : this->m_nodes[i]) {
+            node->pushValue();
+        }
     }
 }
